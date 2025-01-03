@@ -1,0 +1,182 @@
+[
+    {
+      "id": "1badge2001",
+      "name": "Round Badge with 'Healthcare Heroes' Print",
+      "price": "$1.2",
+      "amount": 50,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "A durable round badge with a bold 'Healthcare Heroes' print, perfect for uniforms or casual wear. Add a touch of pride to your everyday clothing with this classic accessory."
+    },
+    {
+      "id": "1tee2002",
+      "name": "Plain Tee with 'Nurses Rule the World' Logo",
+      "price": "$10.5",
+      "amount": 30,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "Soft, breathable plain tee featuring the bold 'Nurses Rule the World' logo. Made from 100% cotton, this shirt ensures comfort for long shifts or casual outings."
+    },
+    {
+      "id": "1badge2003",
+      "name": "Square Badge with 'Patient First' Message",
+      "price": "$1.0",
+      "amount": 75,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "A square-shaped badge that carries a simple yet impactful message, 'Patient First'. It's an excellent reminder and conversation starter for healthcare professionals."
+    },
+    {
+      "id": "1hoodie2004",
+      "name": "Comfortable Hoodie with 'Nurse Strong' Print",
+      "price": "$25.0",
+      "amount": 15,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "Stay cozy with this soft, stylish hoodie featuring the 'Nurse Strong' slogan. Perfect for chilly shifts or after-work relaxation, made from a comfortable cotton-polyester blend."
+    },
+    {
+      "id": "1badge2005",
+      "name": "Heart-Shaped Badge with 'Nursing is a Work of Heart' Text",
+      "price": "$1.5",
+      "amount": 60,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "Show your love for nursing with this heart-shaped badge that carries the heartfelt message, 'Nursing is a Work of Heart'. Ideal for jackets, bags, and scrubs."
+    },
+    {
+      "id": "1cap2006",
+      "name": "Snapback Cap with 'Nurses Rock' Embroidery",
+      "price": "$18.0",
+      "amount": 20,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "This trendy snapback cap features 'Nurses Rock' in stylish embroidery. It's the perfect casual accessory for both workdays and off-duty hours."
+    },
+    {
+      "id": "1badge2007",
+      "name": "Oval Badge with 'Healing Hands' Design",
+      "price": "$1.3",
+      "amount": 90,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "An elegant oval badge featuring a 'Healing Hands' design that symbolizes the nurturing care of nurses. A thoughtful addition to any healthcare professional's wardrobe."
+    },
+    {
+      "id": "1tee2008",
+      "name": "Graphic Tee with 'Future Nurse' Logo",
+      "price": "$12.5",
+      "amount": 35,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "A graphic tee that proudly displays the 'Future Nurse' logo for aspiring healthcare professionals. This shirt is perfect for students or those entering the nursing field."
+    },
+    {
+      "id": "1badge2009",
+      "name": "Star-Shaped Badge with 'Nursing Star' Design",
+      "price": "$1.1",
+      "amount": 100,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "Shine like a star with this star-shaped badge that reads 'Nursing Star'. The perfect accessory to brighten your work uniform or everyday outfits."
+    },
+    {
+      "id": "1jacket2010",
+      "name": "Windbreaker Jacket with 'Nursing Warrior' Slogan",
+      "price": "$35.0",
+      "amount": 10,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "Lightweight and water-resistant, this windbreaker jacket features the bold 'Nursing Warrior' slogan. Perfect for outdoor shifts or post-work errands."
+    },
+    {
+      "id": "1badge2011",
+      "name": "Mini Badge with 'Care Giver' Text",
+      "price": "$0.8",
+      "amount": 150,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "A mini badge that proudly displays the 'Care Giver' text in an elegant font. A subtle yet powerful accessory for every nurse and caregiver."
+    },
+    {
+      "id": "1tee2012",
+      "name": "V-Neck Tee with 'I Save Lives' Graphic",
+      "price": "$14.0",
+      "amount": 25,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "This v-neck tee features the bold graphic 'I Save Lives' across the front, made from premium cotton for all-day comfort, especially during long shifts."
+    },
+    {
+      "id": "1badge2013",
+      "name": "Triangle Badge with 'RN' Design",
+      "price": "$1.3",
+      "amount": 80,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "This triangle-shaped badge with an 'RN' design is perfect for registered nurses who want to wear their profession with pride."
+    },
+    {
+      "id": "1shirt2014",
+      "name": "Long Sleeve Shirt with 'Nurse On Duty' Logo",
+      "price": "$22.0",
+      "amount": 18,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "Stay warm and stylish with this long-sleeve shirt featuring the 'Nurse On Duty' logo. Perfect for cooler weather or wearing under scrubs."
+    },
+    {
+      "id": "1badge2015",
+      "name": "Heart-Shaped Badge with 'Nurse Life' Emblem",
+      "price": "$1.6",
+      "amount": 70,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "This heart-shaped badge showcases the 'Nurse Life' emblem, a perfect accessory for scrubs or bags that adds a personal touch to your uniform."
+    },
+    {
+      "id": "1hoodie2016",
+      "name": "Pullover Hoodie with 'Nurses Save Lives' Print",
+      "price": "$28.5",
+      "amount": 12,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "A cozy pullover hoodie with a bold 'Nurses Save Lives' print, designed for ultimate comfort during off-duty hours or chilly days at work."
+    },
+    {
+      "id": "1badge2017",
+      "name": "Badge with 'Proud Nurse' Inscription",
+      "price": "$1.2",
+      "amount": 85,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "Show off your pride with this 'Proud Nurse' badge. Its sleek design makes it a great addition to any healthcare professional's accessories."
+    },
+    {
+      "id": "1cap2018",
+      "name": "Baseball Cap with 'Nurse Power' Logo",
+      "price": "$17.0",
+      "amount": 28,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "A sporty baseball cap with the 'Nurse Power' logo embroidered on the front. It's the perfect accessory for your off-duty look or casual outings."
+    },
+    {
+      "id": "1badge2019",
+      "name": "Circular Badge with 'Emergency Nurse' Text",
+      "price": "$1.4",
+      "amount": 65,
+      "image": "../../static/img/aboutusImg1.jpg",
+      "category": "Badges",
+      "desc": "A circular badge with the text 'Emergency Nurse' for all the frontline heroes who work tirelessly in emergency rooms. A badge that speaks volumes."
+    },
+    {
+      "id": "1jacket2020",
+      "name": "Fleece Jacket with 'Caring is My Superpower' Slogan",
+      "price": "$40.0",
+      "amount": 8,
+      "image": "../../static/img/aboutusImg2.jpg",
+      "category": "Clothings",
+      "desc": "This fleece jacket features the slogan 'Caring is My Superpower'. Warm and functional, it's perfect for those long, cold hospital nights."
+    }
+  ]

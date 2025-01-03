@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+input{
+    font-family: "montserrat";
+}
+/* =============== NAV.JS  */
+.navbar{
+    font-family: 'lato';
+    backdrop-filter: blur(20px);
+    background: #f5f5f58a;
+}
+.nav-links li{
+    list-style:  none;
+}
+.nav-links li a{
+
+    font-size: 16px;
+    color: #2f9800;
+    font-weight: 500;
+}
+.nav-links li a.active{
+    font-weight: 600;
+}
+.nav-links li a::after{
+    content: '';
+    display: block;
+    width: 0;
+    transition: 0.3s;
+    height: 3px;
+    transform-origin: center;
+    position: relative;
+    border-bottom: 3px solid #2f9800;
+    z-index: 99;
+}
+.nav-links li:hover a::after{
+    width:100%;
+}
+.nav-links li:hover a{
+    font-weight: 600;
+}
+.nav-links::before li{
+    width: 100%;
+    height: 3px;
+    position: relative;
+    display: block;
+    z-index: 99;
+    background: #2f9800;
+}
+.register button:hover{
+    background: #2f9800;
+}
+@media screen and (max-width : 768px) and (min-width : 640px) {
+    .nav-links li a{
+        font-size: 12px;
+    } 
+}
+/* =============== LOGIN.JS AND SIGNUP.JS  */
+
+.login {
+    font-family: 'montserrat';
+}
+.login h5{
+    font-family: 'lato';
+}
+
+
+/* { contact us section } */
+
+/* { hero section } */
+.hero-sec{
+    background-image: url('../img/hero.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.hero-sec::after{
+    content: '';
+    width: 100%;
+    height: 80vh;
+    background: #00000048;
+    display: block;
+}
+.hero-sec{
+    font-family: 'Roboto';
+}
+
+/* { about us section } */
+.about-us h1, .about-us button{
+    font-family: "montserrat";
+}
+.about-us p{
+    font-family: 'Roboto';
+    word-spacing: .5px;
+}
+.about-us-first-image{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+/* { Our Products section } */
+.our-products-sec h1{
+    font-family: 'montserrat';
+}
+.product-card{
+    font-family: 'roboto';
+ }
+.product-card button{
+    font-family: 'lato';
+}
+
+/* { contact us section } */
+.contact-us-header{
+    font-family: 'montserrat';
+}
+.contact-us p{
+    font-family: 'lato';
+    font-weight: 400;
+}
+.contact-us label, .contact-us input{
+    font-family: 'lato';
+}
+
+/* { footer section } */
+.footer-logo{
+    font-family: 'roboto';
+}
+.footer-nav-list{
+    font-family: 'montserrat';
+}
+.footer-nav-list li{
+    list-style: none;
+    color: #2f9800;
+    font-weight: 500;
+}
+.copyright{
+    font-family:'montserrat' ;
+}
+
+
+/* =============== PRODUCTPAGE.JS  */
+.product-cards{
+    font-family: 'montserrat';
+}
+.filter-nav{
+    list-style: none;
+    font-family: 'montserrat';
+
+}
+
+/* =============== PRODUCTINFO.JS */
+.small-nav li{
+    font-family: 'lato';
+    list-style: none;
+}
+.small-nav p{
+    font-size: 20px;
+    color: #00000042;
+}
+.product-desc{
+    font-family: 'lato';
+
+}
+.product-name{
+    font-family: 'montserrat';
+}
+.second-part p{
+    font-family: 'montserrat';
+}
+.similar-product-section{
+    font-family: 'lato';
+}
+
+/* =============== CART.JS */
+.cart-orders h1, .check-out h1{
+    font-family: 'lato';
+}
+.order{
+    font-family: 'montserrat';
+}
+.check-out{
+    font-family:'montserrat' ;
+}
