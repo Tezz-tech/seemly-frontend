@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import Nav from "../Partials/Nav";
-import similarProducts from "./data.json";
 import Footer from "../Partials/Footer";
 import aboutUsImg1 from "../../static/img/aboutusImg1.jpg";
+import { DataContext } from "../context/DataContext";
 
 function ProductInfo() {
   const location = useLocation();
@@ -19,6 +19,9 @@ function ProductInfo() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [total, setTotal] = useState(productAmount);
+  const { setCart, cart } = useContext(DataContext);
+
+  const isUserLoggedIn = sessionStorage.getItem("smeemly-user");
 
   // Handle quantity and total price calculation
   const handleTotal = (e) => {
@@ -28,39 +31,35 @@ function ProductInfo() {
     setTotal(newTotal);
   };
 
-  // Fetch existing cart items from localStorage
-  const [order, setNewOrder] = useState(() => {
-    return JSON.parse(localStorage.getItem("cartItems")) || [];
-  });
-
-  // Add product to cart
-  const addToCart = () => {
-    const newProduct = {
-      CartProductName: productName,
-      CartProductAmount: productAmount,
-      CartProductId: productId,
-      quantity: quantity,
-      total: total,
+  // Add to cart functionality
+  const handleAddToCart = () => {
+    if (!isUserLoggedIn) {
+      alert("Please log in before adding items to your cart.");
+      return;
+    }
+  
+    // Create a new item to add to the cart
+    const newItem = {
+      id: productId,
+      name: productName,
+      price: productAmount,
+      quantity,
+      totalPrice: quantity * productAmount,
+      image: productImage,
     };
-
-    const updatedOrder = [...order, newProduct];
-    setNewOrder(updatedOrder);
-    localStorage.setItem("cartItems", JSON.stringify(updatedOrder));
-
-    // Show success alert
-    alert(`${productName} has been added to your cart.`);
-
-    // Navigate to the cart page
-    navigate("/cart", {
-      state: {
-        cartItems: updatedOrder,
-      },
-    });
+  
+    // Add the new item to the existing cart
+    const updatedCart = [...cart, newItem];
+  
+    // Update the cart in state and storage
+    setCart(updatedCart);
+    sessionStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  
+    alert("Item added to cart successfully!");
   };
-
-  const randomProducts = similarProducts.sort(() => 0.5 - Math.random());
-  const similarProductsSliced = randomProducts.slice(0, 3);
-
+  
+  
+  
   return (
     <>
       <Nav />
@@ -121,11 +120,12 @@ function ProductInfo() {
                 value={quantity}
                 onChange={handleTotal}
                 className="text-[#a2a2a2] outline-none w-[20%] h-[50px] mt-2 pl-3 border-[1px] border-[#00000087]"
+                min="1"
               />
             </div>
             <div className="add-to-cart mt-5">
               <button
-                onClick={addToCart}
+                onClick={handleAddToCart}
                 className="text-[white] bg-[#2f9800] hover:bg-[#309800e1] transition-[0.3s] lg:w-[80%] sm:w-[50%] md:w-[40%] min-[500px]:w-[50%] w-[100%] py-3 rounded-md border-[1px] border-[#2f9800] flex justify-center items-center"
               >
                 Add to Cart
@@ -136,49 +136,6 @@ function ProductInfo() {
             </div>
           </div>
         </section>
-      </section>
-      <section className="similar-product-section w-[90%] mx-auto mt-[10%]">
-        <h1 className="text-center text-[35px] text-[#2f9800]">
-          You Must Also Like
-        </h1>
-        <div className="w-[100%] h-[300px] lg:h-[400px] mx-auto mt-5 flex items-center gap-[5%] justify-center">
-          {similarProductsSliced.map((similarProduct) => {
-            if (similarProduct.category === productCategory) {
-              return (
-                <div
-                  key={similarProduct.id}
-                  className="lg:w-[20%] md:w-[40%] sm:w-[50%] w-[50%] h-full cursor-pointer"
-                  onClick={() => {
-                    navigate(`/products/${similarProduct.name}`, {
-                      state: {
-                        productId: similarProduct.id,
-                        productName: similarProduct.name,
-                        productAmount: similarProduct.amount,
-                        productImage: aboutUsImg1,
-                        productDesc: similarProduct.desc,
-                        productCategory: similarProduct.category,
-                      },
-                    });
-                  }}
-                >
-                  <img
-                    src={productImage || aboutUsImg1}
-                    alt={similarProduct.name}
-                    className="w-full h-[45%] md:h-[50%] object-cover"
-                  />
-                  <h1 className="mt-2 font-light text-[16px] h-[30%] md:h-[10%]">
-                    {similarProduct.name}
-                  </h1>
-                  <p className="font-medium text-[14px] mt-5 h-[10%]">
-                    ${similarProduct.amount}.00
-                  </p>
-                </div>
-              );
-            } else {
-              return null;
-            }
-          })}
-        </div>
       </section>
       <Footer />
     </>

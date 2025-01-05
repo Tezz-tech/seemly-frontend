@@ -20,7 +20,7 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/user/login",
+        "https://seemly-backend.onrender.com/api/user/login",
         formData
       );
 
@@ -30,7 +30,7 @@ function Login() {
       });
 
       localStorage.setItem("smeemly-token", res.data.token);
-      localStorage.setItem("smeemly-user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("smeemly-user", JSON.stringify(res.data.user));
 
       setTimeout(() => {
         navigate("/");

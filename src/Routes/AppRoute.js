@@ -7,10 +7,12 @@ import ProductPage from '../Component/Products/ProductPage'
 import ProductInfo from '../Component/Products/ProductInfo'
 import Contact from '../Component/Home/Contact'
 import Cart from '../Component/Products/Cart'
+import DataProvider from '../Component/context/DataContext'
 
 function AppRoute() {
   return (
     <>
+    <DataProvider>
         <Router>
             <Routes>
                 <Route  path='/' Component={Home} />
@@ -22,6 +24,7 @@ function AppRoute() {
                 <Route path='/cart' Component={Cart}></Route>
             </Routes>
         </Router>
+        </DataProvider>
     </>
   )
 }

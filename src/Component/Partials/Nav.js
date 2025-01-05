@@ -10,20 +10,22 @@ function Nav() {
     const [showLogoutModal, setShowLogoutModal] = useState(false); // State for the modal
 
     useEffect(() => {
-        const storedCartCount = localStorage.getItem('cartCount');
-        if (storedCartCount) {
-            setCartCount(parseInt(storedCartCount));
+        const storedCart = sessionStorage.getItem('cartItems');
+        if (storedCart) {
+          const cartItems = JSON.parse(storedCart); // Parse the stored cart items
+          const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
+          setCartCount(totalQuantity); // Update the cart count
         }
 
-        const storedUser = JSON.parse(localStorage.getItem("smeemly-user"));
+        const storedUser = JSON.parse(sessionStorage.getItem("smeemly-user"));
         if (storedUser) {
             setUser(storedUser);
         }
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("smeemly-token");
-        localStorage.removeItem("smeemly-user");
+        sessionStorage.removeItem("smeemly-token");
+        sessionStorage.removeItem("smeemly-user");
         setUser(null);
         setShowLogoutModal(false); // Close modal after logout
     };

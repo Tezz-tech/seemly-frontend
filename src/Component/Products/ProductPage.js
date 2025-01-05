@@ -14,7 +14,7 @@ function ProductPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/product'); // Replace with your API URL
+                const response = await fetch('https://seemly-backend.onrender.com/api/product'); // Replace with your API URL
                 const data = await response.json();
                 setProducts(data);
             } catch (error) {

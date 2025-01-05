@@ -29,7 +29,7 @@ function Signup() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/user/register', formData);
+      const response = await axios.post('https://seemly-backend.onrender.com/api/user/register', formData);
       toast.success('User registered successfully!', {
         position: "top-right", // Use position as a string
         autoClose: 3000, // Close after 3 seconds
