@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleForm = (e) => {
@@ -17,6 +18,7 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Set loading to true
 
     try {
       const res = await axios.post(
@@ -33,9 +35,11 @@ function Login() {
       sessionStorage.setItem("smeemly-user", JSON.stringify(res.data.user));
 
       setTimeout(() => {
+        setIsLoading(false); // Set loading to false before navigating
         navigate("/");
       }, 2500);
     } catch (err) {
+      setIsLoading(false); // Set loading to false on error
       toast.error(
         err.response?.data?.message || "Login failed. Please try again.",
         {
@@ -88,28 +92,34 @@ function Login() {
               <button
                 type="submit"
                 className="w-[50%] h-[50px] bg-[#2f9800] text-white text-center font-[600] mt-[5%]"
+                disabled={isLoading} // Disable button while loading
               >
-                Sign In
+                {isLoading ? "Loading..." : "Sign In"}
               </button>
             </div>
           </form>
 
-           {/* OR Divider */}
-           <div className='flex items-center my-6'>
-              <hr className='flex-grow border-t border-gray-300' />
-              <span className='mx-4 text-gray-400'>or</span>
-              <hr className='flex-grow border-t border-gray-300' />
-            </div>
+          {/* OR Divider */}
+          <div className="flex items-center my-6">
+            <hr className="flex-grow border-t border-gray-300" />
+            <span className="mx-4 text-gray-400">or</span>
+            <hr className="flex-grow border-t border-gray-300" />
+          </div>
 
           {/* Sign Up Redirect */}
-          <div className='text-center'>
-              <Link to="/signup">
-                <button className='w-[50%] h-[40px] border-[#1a1515] border-[1.5px] items-center py-2 rounded-md'>
-                  <span className='text-[14px] text-black'>Sign up with Email</span>
-                </button>
-              </Link>
-            </div>
+          <div className="text-center">
+            <Link to="/signup">
+              <button className="w-[50%] h-[40px] border-[#1a1515] border-[1.5px] items-center py-2 rounded-md">
+                <span className="text-[14px] text-black">Sign up with Email</span>
+              </button>
+            </Link>
+          </div>
         </div>
+        {isLoading && (
+          <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="loader border-t-4 border-b-4 border-white w-12 h-12 rounded-full animate-spin"></div>
+          </div>
+        )}
       </div>
     </>
   );
