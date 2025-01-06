@@ -7,9 +7,13 @@ import { DataContext } from "../context/DataContext";
 function Cart() {
   const { cart, setCart } = useContext(DataContext);
   const [address, setAddress] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [orderId, setOrderId] = useState(null);
+  const storedUser = JSON.parse(sessionStorage.getItem("smeemly-user"));
+
 
   // Get user from sessionStorage
-  const user = JSON.parse(sessionStorage.getItem("smeemly-user"));
+  const user = storedUser.firstName
 
   // Increase quantity of a cart item
   const increaseItem = (item) => {
@@ -59,37 +63,85 @@ function Cart() {
   const finalTotal = subtotal + deliveryFee;
 
   // Handle checkout with Paystack
-  const handleCheckout = () => {
+  // Handle checkout with Paystack
+  const handleCheckout = async () => {
+    // Check if address is provided
     if (!address) {
       alert("Please enter your address before proceeding to checkout.");
       return;
     }
-
-    const paystackHandler = window.PaystackPop.setup({
-      key: "pk_test_d3a60265a49af403da62ebb911e30f155701b601", // Replace with your Paystack public key
-      email: user.email,
-      amount: finalTotal * 100, // Convert to kobo
-      currency: "NGN",
-      callback: (response) => {
-        // Payment successful
-        const orderDetails = {
-          user,
-          address,
-          cart,
-          paymentReference: response.reference,
-        };
-        console.log("Order Details:", orderDetails);
-        alert("Payment successful!");
-        setCart([]);
-        sessionStorage.removeItem("cartItems");
-      },
-      onClose: () => {
-        alert("Payment was not completed. Please try again.");
-      },
-    });
-
-    paystackHandler.openIframe();
+  
+    // Ensure Paystack is available
+    if (!window.PaystackPop) {
+      alert("Paystack is not available. Please try again later.");
+      return;
+    }
+  
+    // Function to handle the payment process
+    const initiatePayment = () => {
+      return new Promise((resolve, reject) => {
+        const paystackHandler = window.PaystackPop.setup({
+          key: "pk_test_d3a60265a49af403da62ebb911e30f155701b601", // Replace with your Paystack public key
+          email: storedUser.email,
+          amount: finalTotal * 100, // Convert to kobo
+          currency: "NGN",
+          callback: (response) => resolve(response), // Resolve the promise on success
+          onClose: () => reject(new Error("Payment was not completed. Please try again.")), // Reject the promise if payment is not completed
+        });
+  
+        paystackHandler.openIframe();
+      });
+    };
+  
+    try {
+      // Initiate Paystack payment and wait for the response
+      const paymentResponse = await initiatePayment();
+  
+      // Payment successful, handle the response
+      console.log("Payment successful:", paymentResponse);
+  
+      // Get the cart items from session storage
+      const cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
+  
+      // Create the order object by combining the response and cart items
+      const order = {
+        paymentResponse: paymentResponse,
+        items: cartItems,
+        user: user,
+      };
+  
+      // Log the order object for confirmation
+      console.log("Order details:", order);
+  
+      // Send the order details to the API
+      const apiResponse = await fetch('https://seemly-backend.onrender.com/api/order/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(order),
+      });
+  
+      if (apiResponse.ok) {
+        console.log('Order saved successfully');
+        const orderData = await apiResponse.json();
+      setOrderId(orderData.orderId); // Assuming the API returns the order ID
+      setIsModalOpen(true);
+      } else {
+        console.error('Failed to save order');
+      }
+  
+      // Clear cart and session storage after payment
+      setCart([]); // Clear cart
+      sessionStorage.removeItem("cartItems"); // Clear cart items from session storage
+    } catch (error) {
+      // Handle errors, including payment failure or API issues
+      console.error('Error:', error.message || error);
+    }
   };
+  
+  
+  
 
   return (
     <>
@@ -188,6 +240,24 @@ function Cart() {
         </div>
       </section>
       <Footer />
+
+       {/* Modal for displaying order confirmation */}
+    {isModalOpen && (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <h2 className="text-xl font-semibold text-center">Order Successful</h2>
+          <p className="text-center mt-4">Your order has been successfully placed. Your Order is on it's way</p>
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
     </>
   );
 }

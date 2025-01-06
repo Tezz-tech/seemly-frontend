@@ -1,4 +1,3 @@
-import React from "react";
 import Nav from "../Partials/Nav";
 import aboutUsImg1 from '../../static/img/aboutusImg1.jpg'
 import aboutUsImg2 from '../../static/img/aboutusImg2.jpg'
@@ -6,14 +5,38 @@ import logo from '../../static/img/logo.png'
 import Footer from "../Partials/Footer";
 import { Link } from "react-router-dom"
 import products from '../Products/data.json'
-import {FaStar, FaFacebookF, FaTwitterSquare, FaInstagramSquare} from 'react-icons/fa'
-
-
+import { FaStar } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom';
+import ClipLoader from "react-spinners/ClipLoader"; // Import spinner
+import React, { useState, useEffect } from 'react';
 
 function Home() {
+  const navigate = useNavigate();
 
-  const randomProducts = products.sort(function(){return (0.5 - Math.random())})
-  const randomProductSliced = randomProducts.slice(randomProducts, 3)
+  // State to store products fetched from the API
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // State to track loading status
+
+  // Fetch products from the API on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true); // Set loading to true before fetching
+        const response = await fetch('https://seemly-backend.onrender.com/api/product'); // Replace with your API URL
+        const data = await response.json();
+        // Randomly shuffle the products and slice the first 3
+        const randomProducts = data.sort(() => 0.5 - Math.random()).slice(0, 3);
+        setProducts(randomProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false after fetching is complete
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
     <>
       <div className="w-[100%] ">
@@ -40,10 +63,8 @@ function Home() {
             <h1 className="lg:text-[50px] text-[34px] lg:w-[auto] w-[90%] mx-auto text-center lg:text-left text-[#00a2e2]">About Us</h1>
             <p className="lg:text-[14px] lg:text-start text-center text-[13px] text-[#a2a2a2] leading-snug ">Seemly Professionals Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium inventore provident sint fugiat aspernatur, iusto adipisci nostrum aperiam suscipit ab sit a quia porro eum deleniti error illum? <span className="text-[#00a2e2] font-medium"> Get</span></p>
             <Link to="/login">
-            <button className="lg:w-[40%] w-[80%]  lg:mx-0 mx-auto h-[50px] mt-[10%] flex items-center justify-center bg-[#2f9800] font-semibold hover:bg-[#367b16] linear transition-[0.4s] rounded-md text-[#f5f5f5]">Join Now</button>
+              <button className="lg:w-[40%] w-[80%]  lg:mx-0 mx-auto h-[50px] mt-[10%] flex items-center justify-center bg-[#2f9800] font-semibold hover:bg-[#367b16] linear transition-[0.4s] rounded-md text-[#f5f5f5]">Join Now</button>
             </Link>
-           
-
           </div>
           <div className="about-us-image lg:block hidden h-[80%] w-[45%] relative">
             <img src={aboutUsImg1} alt="" className="about-us-first-image w-[80%] bottom-0 absolute h-[60%] rounded-lg object-cover" />
@@ -53,30 +74,55 @@ function Home() {
 
         {/* =================== OUR PRODUCTS  =================== */}
         <section className="our-products-sec h-auto pt-[80px] px-[5%]">
-          <h1 className="lg:text-[55px] text-[34px]  text-[#2f9800] text-center">Our Best Sellers</h1>
+          <h1 className="lg:text-[55px] text-[34px] text-[#2f9800] text-center">Our Best Sellers</h1>
           <div className="products-area-display w-[90%] mx-auto mt-10 h-auto flex lg:flex-row flex-col items-center justify-between">
-            {randomProductSliced.map((product)=> <div key={product.id} className="lg:w-[30%] sm:w-[60%] min-[500px]:w-[70%] w-[100%] product-card mt-10  lg:mt-0">
-              <img src={aboutUsImg1} alt="" className="rounded-[20px] w-[100%]  lg:h-[400px] h-[200px] object-cover"  />
-              <div className="product-header-info w-[100%] mt-5 flex flex-col gap-[15px] justify-center">
-                <div className="name-rating-info flex h-[60px] justify-between items-center">
-                  <h1 className="mt-5 font-bold lg:text-[18px] text-[16px] min-[500px]:text-[14px] w-[60%] sm:w-[60%] min-[500px]:w-[50%]  text-[#00a2e2]">{product.name}</h1>
-                  <div className="flex items-center gap-2 mt-3">
-                    <FaStar className="text-[#ffd27d]" />
-                    <FaStar className="text-[#ffd27d]" />
-                    <FaStar className="text-[#ffd27d]" />
-                    <FaStar className="text-[#ffd27d]" />
-                    <FaStar className="text-[#ffd27d]" />
+            {isLoading ? (
+              <ClipLoader color="#2f9800" size={50} />
+            ) : (
+              products.map((product) => (
+                <div key={product.id} className="lg:w-[30%] sm:w-[60%] min-[500px]:w-[70%] w-[100%] product-card mt-10 lg:mt-0">
+                  <img
+                    src={product.image} // Assuming product has an image field
+                    alt={product.name}
+                    className="rounded-[20px] w-[100%] lg:h-[400px] h-[200px] object-cover"
+                  />
+                  <div className="product-header-info w-[100%] mt-5 flex flex-col gap-[15px] justify-center">
+                    <div className="name-rating-info flex h-[60px] justify-between items-center">
+                      <h1 className="mt-5 font-bold lg:text-[18px] text-[16px] min-[500px]:text-[14px] w-[60%] sm:w-[60%] min-[500px]:w-[50%] text-[#00a2e2]">{product.name}</h1>
+                      <div className="flex items-center gap-2 mt-3">
+                        <FaStar className="text-[#ffd27d]" />
+                        <FaStar className="text-[#ffd27d]" />
+                        <FaStar className="text-[#ffd27d]" />
+                        <FaStar className="text-[#ffd27d]" />
+                        <FaStar className="text-[#ffd27d]" />
+                      </div>
+                    </div>
+                    <div className="flex justify-between lg:mt-5 mt-5 sm:mt-3 items-center">
+                      <h1 className="font-medium text-[16px]">Price</h1>
+                      <p className="font-semibold text-[18px]">{product.price}</p>
+                    </div>
+                    <p className="lg:text-[16px] text-[14px] h-[100px] min-[500px]:h-[80px] text-[#a2a2a2] mt-5">{product.description}</p>
+                    <button
+                      className="w-[60%] min-[500px]:w-[80%] h-[50px] sm:mt-[2%] flex items-center justify-center bg-[#2f9800] font-semibold hover:bg-[#367b16] linear transition-[0.4s] rounded-md text-[#f5f5f5]"
+                      onClick={() => {
+                        navigate(`/products/${product.name}`, {
+                          state: {
+                            productId: product.id,
+                            productName: product.name,
+                            productAmount: product.price,
+                            productDesc: product.description,
+                            productImage: product.image,
+                            productCategory: product.category,
+                          },
+                        });
+                      }}
+                    >
+                      Buy Now
+                    </button>
                   </div>
                 </div>
-                <div className="flex justify-between lg:mt-5 mt-5 sm:mt-3 items-center">
-                  <h1 className="font-medium text-[16px]">Price</h1>
-                  <p className="font-semibold text-[18px]">{product.price}</p>
-                </div>
-                <p className="lg:text-[16px] text-[14px] h-[100px] min-[500px]:h-[80px]   text-[#a2a2a2] mt-5">{product.desc}</p>
-                <button className="w-[60%] min-[500px]:w-[80%] h-[50px] sm:mt-[2%] flex items-center justify-center bg-[#2f9800] font-semibold hover:bg-[#367b16] linear transition-[0.4s] rounded-md text-[#f5f5f5]">Buy Now</button>
-              </div>
-
-            </div>)}
+              ))
+            )}
           </div>
         </section>
 
