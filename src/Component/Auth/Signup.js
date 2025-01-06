@@ -58,7 +58,7 @@ function Signup() {
 
   return (
     <>
-      <div className="login w-full h-[100vh] overflow-hidden flex-col items-center justify-center relative">
+      <div className="login w-full h-[100vh] flex-col items-center justify-center relative">
         {/* Arrow redirecting to home page */}
         <div className="flex items-center w-[90%] h-[20%] px-5 justify-between">
           <Link to="/">
