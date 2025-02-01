@@ -1,8 +1,52 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Nav from "../Partials/Nav";
 import Footer from "../Partials/Footer";
 import { FaTrash } from "react-icons/fa";
 import { DataContext } from "../context/DataContext";
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe('pk_live_51OHG7qBqSNRl3dSZAFw1ptKnVwFHrku7k42rLPBYcLgamxI4S8J5lIdVCJGop6uFzrp1JkL2DpOoROb0z2IunSSC00HfwKlbdS'); // Replace with your Stripe public key
+
+const CheckoutForm = ({ handleCheckout, address }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    const cardElement = elements.getElement(CardElement);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+    } else {
+      await handleCheckout(paymentMethod.id);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <CardElement className="border p-2 rounded-md" />
+      <button
+        type="submit"
+        disabled={!stripe || !address}
+        className="w-full min-[500px]:w-[100%] mx-auto flex justify-center bg-[#2f9800] rounded-sm items-center text-[#f5f5f5] mt-5 h-[45px]"
+      >
+        Pay
+      </button>
+    </form>
+  );
+};
 
 function Cart() {
   const { cart, setCart } = useContext(DataContext);
@@ -11,11 +55,8 @@ function Cart() {
   const [orderId, setOrderId] = useState(null);
   const storedUser = JSON.parse(sessionStorage.getItem("smeemly-user"));
 
+  const user = storedUser.firstName;
 
-  // Get user from sessionStorage
-  const user = storedUser.firstName
-
-  // Increase quantity of a cart item
   const increaseItem = (item) => {
     const updatedCart = cart.map((cartItem) =>
       cartItem.id === item.id
@@ -30,7 +71,6 @@ function Cart() {
     sessionStorage.setItem("cartItems", JSON.stringify(updatedCart));
   };
 
-  // Decrease quantity of a cart item
   const decreaseItem = (item) => {
     if (item.quantity > 1) {
       const updatedCart = cart.map((cartItem) =>
@@ -47,7 +87,6 @@ function Cart() {
     }
   };
 
-  // Delete a cart item
   const handleDeleteItem = (item) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     if (confirmDelete) {
@@ -57,91 +96,83 @@ function Cart() {
     }
   };
 
-  // Calculate subtotal
   const subtotal = cart.reduce((acc, item) => acc + item.totalPrice, 0);
-  const deliveryFee = 4.0; // Example fixed delivery fee
+  const deliveryFee = 4.0;
   const finalTotal = subtotal + deliveryFee;
 
-  // Handle checkout with Paystack
-  // Handle checkout with Paystack
-  const handleCheckout = async () => {
-    // Check if address is provided
+  const handleCheckout = async (paymentMethodId) => {
     if (!address) {
       alert("Please enter your address before proceeding to checkout.");
       return;
     }
-  
-    // Ensure Paystack is available
-    if (!window.PaystackPop) {
-      alert("Paystack is not available. Please try again later.");
-      return;
-    }
-  
-    // Function to handle the payment process
-    const initiatePayment = () => {
-      return new Promise((resolve, reject) => {
-        const paystackHandler = window.PaystackPop.setup({
-          key: "pk_test_d3a60265a49af403da62ebb911e30f155701b601", // Replace with your Paystack public key
-          email: storedUser.email,
-          amount: finalTotal * 100, // Convert to kobo
-          currency: "NGN",
-          callback: (response) => resolve(response), // Resolve the promise on success
-          onClose: () => reject(new Error("Payment was not completed. Please try again.")), // Reject the promise if payment is not completed
-        });
-  
-        paystackHandler.openIframe();
-      });
-    };
-  
+
     try {
-      // Initiate Paystack payment and wait for the response
-      const paymentResponse = await initiatePayment();
-  
-      // Payment successful, handle the response
-      console.log("Payment successful:", paymentResponse);
-  
-      // Get the cart items from session storage
+      const stripe = await stripePromise;
+      if (!stripe) {
+        alert("Stripe is not available. Please try again later.");
+        return;
+      }
+
       const cartItems = JSON.parse(sessionStorage.getItem("cartItems")) || [];
-  
-      // Create the order object by combining the response and cart items
-      const order = {
-        paymentResponse: paymentResponse,
-        items: cartItems,
-        user: user,
-      };
-  
-      // Log the order object for confirmation
-      console.log("Order details:", order);
-  
-      // Send the order details to the API
-      const apiResponse = await fetch('https://seemly-backend.onrender.com/api/order/', {
+
+      const response = await fetch('https://seemly-backend.onrender.com/api/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(order),
+        body: JSON.stringify({
+          items: cartItems,
+          user: storedUser,
+          total: finalTotal,
+          paymentMethodId: paymentMethodId,
+        }),
       });
-  
-      if (apiResponse.ok) {
-        console.log('Order saved successfully');
-        const orderData = await apiResponse.json();
-      setOrderId(orderData.orderId); // Assuming the API returns the order ID
-      setIsModalOpen(true);
-      } else {
-        console.error('Failed to save order');
+
+      if (!response.ok) {
+        throw new Error('Failed to create payment intent. Please try again.');
       }
-  
-      // Clear cart and session storage after payment
-      setCart([]); // Clear cart
-      sessionStorage.removeItem("cartItems"); // Clear cart items from session storage
+
+      const { clientSecret } = await response.json();
+
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (paymentIntent.status === 'succeeded') {
+        console.log("Payment successful:", paymentIntent);
+
+        const order = {
+          paymentResponse: paymentIntent,
+          items: cartItems,
+          user: storedUser,
+        };
+
+        const apiResponse = await fetch('https://seemly-backend.onrender.com/api/order/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(order),
+        });
+
+        if (apiResponse.ok) {
+          console.log('Order saved successfully');
+          const orderData = await apiResponse.json();
+          setOrderId(orderData.orderId);
+          setIsModalOpen(true);
+        } else {
+          console.error('Failed to save order');
+        }
+
+        setCart([]);
+        sessionStorage.removeItem("cartItems");
+      }
     } catch (error) {
-      // Handle errors, including payment failure or API issues
       console.error('Error:', error.message || error);
     }
   };
-  
-  
-  
 
   return (
     <>
@@ -231,33 +262,29 @@ function Cart() {
             <p className="text-[20px] font-light">Total</p>
             <p className="text-[18px]">${finalTotal.toFixed(2)}</p>
           </div>
-          <button
-            onClick={handleCheckout}
-            className="w-full min-[500px]:w-[100%] mx-auto flex justify-center bg-[#2f9800] rounded-sm items-center text-[#f5f5f5] mt-5 h-[45px]"
-          >
-            Checkout
-          </button>
+          <Elements stripe={stripePromise}>
+            <CheckoutForm handleCheckout={handleCheckout} address={address} />
+          </Elements>
         </div>
       </section>
       <Footer />
 
-       {/* Modal for displaying order confirmation */}
-    {isModalOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-          <h2 className="text-xl font-semibold text-center">Order Successful</h2>
-          <p className="text-center mt-4">Your order has been successfully placed. Your Order is on it's way</p>
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Close
-            </button>
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold text-center">Order Successful</h2>
+            <p className="text-center mt-4">Your order has been successfully placed. Your Order is on it's way</p>
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </>
   );
 }
