@@ -2,44 +2,66 @@ import React, { useState, useEffect } from 'react';
 import Nav from '../Partials/Nav';
 import Footer from '../Partials/Footer';
 import { useNavigate } from 'react-router-dom';
-import ClipLoader from "react-spinners/ClipLoader"; // Import spinner
+import ClipLoader from "react-spinners/ClipLoader";
 
 function ProductPage() {
     const navigate = useNavigate();
-
-    // State to store products fetched from the API
     const [products, setProducts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // State to track loading status
+    const [isLoading, setIsLoading] = useState(true);
+    const [categories, setCategories] = useState(["All"]);
+    const [selectedCategory, setSelectedCategory] = useState("All");
 
-    // Fetch products from the API on component mount
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                setIsLoading(true); // Set loading to true before fetching
-                const response = await fetch('https://seemly-backend.onrender.com/api/product'); // Replace with your API URL
+                setIsLoading(true);
+                const response = await fetch('https://seemly-backend.onrender.com/api/product');
                 const data = await response.json();
                 setProducts(data);
+
+                // Extract unique categories and ensure "All" is the first category
+                const uniqueCategories = [...new Set(data.map(product => product.category))];
+                setCategories(["All", ...uniqueCategories]);
             } catch (error) {
                 console.error('Error fetching products:', error);
             } finally {
-                setIsLoading(false); // Set loading to false after fetching is complete
+                setIsLoading(false);
             }
         };
 
         fetchProducts();
     }, []);
 
+    // Filter products based on selected category
+    const filteredProducts = selectedCategory === "All" ? products : products.filter(product => product.category === selectedCategory);
+
     return (
         <>
             <Nav />
-            <div className='relative w-[100%] mx-auto'></div>
+
+            {/* Categories Section */}
+            <div className="w-[90%] mx-auto mt-12 text-center">
+                <h2 className="text-xl font-semibold mb-6">Categories</h2>
+                <div className="flex gap-4 overflow-x-auto justify-center">
+                    {categories.map((category) => (
+                        <button
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`px-8 py-4 rounded-md ${
+                                selectedCategory === category ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+                            }`}
+                        >
+                            {category}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
             <div className='md:mt-[80px] sm:mt-[80px] mt-0 products-page lg:w-[100%] w-[90%] mx-auto h-[100%] lg:px-4 lg:pl-20 flex lg:gap-[5%] flex-wrap lg:justify-normal justify-between items-center'>
                 {isLoading ? (
-                   
-                      <ClipLoader color="#2f9800" size={50} />
+                    <ClipLoader color="#2f9800" size={50} />
                 ) : (
-                    products.map((product) => (
+                    filteredProducts.map((product) => (
                         <div
                             key={product.id}
                             onClick={() => {
@@ -65,6 +87,7 @@ function ProductPage() {
                     ))
                 )}
             </div>
+
             <Footer />
         </>
     );
