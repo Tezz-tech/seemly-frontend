@@ -5,6 +5,8 @@ import Footer from "../Partials/Footer";
 import aboutUsImg1 from "../../static/img/aboutusImg1.jpg";
 import { DataContext } from "../context/DataContext";
 import ClipLoader from "react-spinners/ClipLoader"; // Import spinner
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // Import AOS styles
 
 function ProductInfo() {
   const location = useLocation();
@@ -16,6 +18,14 @@ function ProductInfo() {
   const { setCart, cart } = useContext(DataContext);
 
   const isUserLoggedIn = sessionStorage.getItem("smeemly-user");
+
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Animation duration
+      once: true, // Whether animation should happen only once - while scrolling down
+    });
+  }, []);
 
   // Fetch product data when component mounts
   useEffect(() => {
@@ -102,7 +112,10 @@ function ProductInfo() {
     <>
       <Nav />
       <section className="md:mt-[120px] sm:mt-[120px] mt-[20px] lg:w-[60%] w-[90%] h-auto mx-auto relative">
-        <div className="w-full small-nav flex items-center gap-5">
+        <div
+          className="w-full small-nav flex items-center gap-5"
+          data-aos="fade-down"
+        >
           <Link to="/">
             <li className="text-[#2f9800] font-light md:text-[16px] text-[10px] hover:font-semibold transition-[0.5s] ease-in-out">
               Home
@@ -119,15 +132,22 @@ function ProductInfo() {
             {productData.productName}
           </li>
         </div>
-        <section className="product-info mt-[5%] w-full flex lg:flex-row flex-col justify-between">
+        <section
+          className="product-info mt-[5%] w-full flex lg:flex-row flex-col justify-between"
+          data-aos="fade-up"
+        >
           <div className="first-part lg:w-[45%] w-[100%]">
             <figure className="w-full">
               <img
                 src={productData.productImage || aboutUsImg1}
                 alt={productData.productName}
                 className="h-[300px] w-full rounded-sm object-cover"
+                data-aos="zoom-in"
               />
-              <div className="other-view-of-image mt-5 flex w-full gap-[20px]">
+              <div
+                className="other-view-of-image mt-5 flex w-full gap-[20px]"
+                data-aos="fade-up"
+              >
                 {[...Array(4)].map((_, index) => (
                   <img
                     key={index}
@@ -139,19 +159,28 @@ function ProductInfo() {
               </div>
             </figure>
             <div className="mt-5 w-full h-auto">
-              <p className="text-[#00000095] product-desc font-light md:text-[16px] sm:text-[14px] text-[13px] tracking-wide">
+              <p
+                className="text-[#00000095] product-desc font-light md:text-[16px] sm:text-[14px] text-[13px] tracking-wide"
+                data-aos="fade-up"
+              >
                 {productData.productDesc}
               </p>
             </div>
           </div>
           <div className="second-part lg:w-[45%] w-[100%] mt-5 lg:mt-0">
-            <h1 className="product-name md:text-[30px] text-[20px] font-light text-[#a2a2a2]">
+            <h1
+              className="product-name md:text-[30px] text-[20px] font-light text-[#a2a2a2]"
+              data-aos="fade-down"
+            >
               {productData.productName}
             </h1>
-            <p className="mt-5 font-semibold text-[26px] text-[#00a2e2]">
+            <p
+              className="mt-5 font-semibold text-[26px] text-[#00a2e2]"
+              data-aos="fade-up"
+            >
               ${total}.00
             </p>
-            <div className="quantity mt-5">
+            <div className="quantity mt-5" data-aos="fade-up">
               <p className="text-[#a2a2a2]">Quantity</p>
               <input
                 type="number"
@@ -161,7 +190,7 @@ function ProductInfo() {
                 min="1"
               />
             </div>
-            <div className="add-to-cart mt-5">
+            <div className="add-to-cart mt-5" data-aos="fade-up">
               <button
                 onClick={handleAddToCart}
                 className="text-[white] bg-[#2f9800] hover:bg-[#309800e1] transition-[0.3s] lg:w-[80%] sm:w-[50%] md:w-[40%] min-[500px]:w-[50%] w-[100%] py-3 rounded-md border-[1px] border-[#2f9800] flex justify-center items-center"
